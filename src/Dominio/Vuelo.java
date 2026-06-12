@@ -11,7 +11,10 @@ public class Vuelo {
     int Capacidad;
     int CostoEnDolares;
     Estado Estado;
-    Lista<Pasajero> Pasajeros;
+    Lista<Pasajero> Reservas;
+    Lista<Pasajero> Confirmados;
+    
+
 
     public Vuelo(String CodigoAeropuertoOrigen, String CodigoAeropuertoDestino, String CodigoDeVuelo, int Capacidad, int CostoEnDolares) {
         this.CodigoAeropuertoOrigen = CodigoAeropuertoOrigen;
@@ -20,7 +23,8 @@ public class Vuelo {
         this.Capacidad = Capacidad;
         this.CostoEnDolares = CostoEnDolares;
         this.Estado = Estado.PROGRAMADO;
-        this.Pasajeros = new Lista<>();
+        this.Reservas = new Lista<>();
+        this.Confirmados = new Lista<>();
     }
 
     public String getCodigoAeropuertoOrigen() {
@@ -62,13 +66,29 @@ public class Vuelo {
     public void setCostoEnDolares(int CostoEnDolares) {
         this.CostoEnDolares = CostoEnDolares;
     }
-
-    public Lista<Pasajero> getPasajeros() {
-        return Pasajeros;
+    
+    public Estado getEstado() {
+        return Estado;
     }
 
-    public void setPasajeros(Lista<Pasajero> Pasajeros) {
-        this.Pasajeros = Pasajeros;
+    public void setEstado(Estado Estado) {
+        this.Estado = Estado;
+    }
+
+    public Lista<Pasajero> getReservas() {
+        return Reservas;
+    }
+
+    public Lista<Pasajero> getConfirmados() {
+        return Confirmados;
+    }
+
+    public void setConfirmados(Lista<Pasajero> Confirmados) {
+        this.Confirmados = Confirmados;
+    }
+
+    public void setReservas(Lista<Pasajero> Reservas) {
+        this.Reservas = Reservas;
     }
     
     public Retorno abrirVuelo(String codigoDeVuelo){

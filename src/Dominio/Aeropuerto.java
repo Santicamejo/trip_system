@@ -6,12 +6,14 @@ import Estructura.Lista;
 public class Aeropuerto {
     String Codigo;
     String Nombre;
-    Lista<Vuelo> Vuelos;
+    Lista<Vuelo> EnEspera;
+    Lista<Vuelo> EmbarqueYDespegue;
 
     public Aeropuerto(String Codigo, String Nombre) {
         this.Codigo = Codigo;
         this.Nombre = Nombre;
-        this.Vuelos = new Lista<>();
+        this.EnEspera = new Lista<>();
+        this.EmbarqueYDespegue = new Lista<>();
     }
 
     public String getCodigo() {
@@ -30,12 +32,20 @@ public class Aeropuerto {
         this.Nombre = Nombre;
     }
 
-    public Lista<Vuelo> getVuelos() {
-        return Vuelos;
+    public Lista<Vuelo> getEnEspera() {
+        return EnEspera;
     }
 
-    public void setVuelos(Lista<Vuelo> Vuelos) {
-        this.Vuelos = Vuelos;
+    public void setEnEspera(Lista<Vuelo> EnEspera) {
+        this.EnEspera = EnEspera;
+    }
+
+    public Lista<Vuelo> getEmbarqueYDespegue() {
+        return EmbarqueYDespegue;
+    }
+
+    public void setEmbarqueYDespegue(Lista<Vuelo> EmbarqueYDespegue) {
+        this.EmbarqueYDespegue = EmbarqueYDespegue;
     }
     
 }

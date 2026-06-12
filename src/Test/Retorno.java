@@ -3,12 +3,12 @@ package Test;
 public class Retorno {
 
     public enum Resultado {
-        OK, ERROR_1, ERROR_2, ERROR_3, ERROR_4, ERROR_5, NO_IMPLEMENTADA
+        OK, ERROR_1, ERROR_2, ERROR_3, ERROR_4, ERROR_5, ERROR_6, ERROR_7, ERROR_8, NO_IMPLEMENTADA
     };
     private int valorEntero;
     private String valorString;
     private boolean valorbooleano;
-    private Resultado resultado;
+    public Resultado resultado;
 
     public Retorno(Resultado resultado) {
         this.resultado = resultado;
@@ -17,6 +17,22 @@ public class Retorno {
     public Retorno(Resultado resultado, String valorString) {
         this.resultado = resultado;
         this.valorString = valorString;
+    }
+
+    public void setValorEntero(int valorEntero) {
+        this.valorEntero = valorEntero;
+    }
+
+    public void setValorString(String valorString) {
+        this.valorString = valorString;
+    }
+
+    public void setValorbooleano(boolean valorbooleano) {
+        this.valorbooleano = valorbooleano;
+    }
+
+    public void setResultado(Resultado resultado) {
+        this.resultado = resultado;
     }
 
     public Retorno(Resultado resultado, String valorString, int valorEntero) {
@@ -82,6 +98,17 @@ public class Retorno {
 
     public static Retorno error5() {
         return new Retorno(Resultado.ERROR_5);
+    }
+    
+    public static Retorno error6() {
+        return new Retorno(Resultado.ERROR_6);
+    }
+    
+    public static Retorno error7() {
+        return new Retorno(Resultado.ERROR_7);
+    }
+    public static Retorno error8() {
+        return new Retorno(Resultado.ERROR_8);
     }
 
 }

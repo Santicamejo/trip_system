@@ -2,10 +2,10 @@
 package dominio;
 
 public class Pasajero {
-    String cedula;
-    String Nombre;
-    int Edad;
-    Categoria Categoria;
+    private String cedula;
+    private String Nombre;
+    private int Edad;
+    private Categoria Categoria;
 
     public Pasajero(String cedula, String Nombre, int Edad, Categoria Categoria) {
         this.cedula = cedula;
@@ -13,6 +13,7 @@ public class Pasajero {
         this.Edad = Edad;
         this.Categoria = Categoria;
     }
+    
 
     public String getCedula() {
         return cedula;

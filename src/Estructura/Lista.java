@@ -1,186 +1,228 @@
 
 package Estructura;
 
+
 public class Lista<T> {
-    private Nodo<T> cabeza;
-    private int tamaño;
+    private Nodo<T> inicio;
+    private int cantNodos;
+    private Nodo<T> fin;
 
     public Lista() {
-        this.cabeza = null;
-        this.tamaño = 0;
+        this.inicio = null;
+        this.cantNodos = 0;
+        this.fin = null;
     }
 
-    public Nodo<T> getCabeza() {
-        return cabeza;
+    public Nodo<T> getInicio() {
+        return inicio;
     }
 
-    public void setCabeza(Nodo<T> cabeza) {
-        this.cabeza = cabeza;
+    public void setInicio(Nodo<T> inicio) {
+        this.inicio = inicio;
     }
 
-    public int getTamaño() {
-        return tamaño;
+    public int getCantNodos() {
+        return cantNodos;
     }
 
-    public void setTamaño(int tamaño) {
-        this.tamaño = tamaño;
+    public void setCantNodos(int cantNodos) {
+        this.cantNodos = cantNodos;
     }
-    
-// operaciones para manipular la lista generica
 
-public boolean esVacia(){
-    return this.cabeza==null;
-}    
-    
-    
-public void agregar(T elemento){
-    Nodo<T> nuevo = new Nodo<>(elemento);
-    if (cabeza==null){
-        cabeza=nuevo;
-    }else{
-        Nodo<T> actual = cabeza;
-        while (actual.siguiente!=null){
-            actual=actual.siguiente;
-        }
-        actual.siguiente=nuevo;
+    public Nodo<T> getFin() {
+        return fin;
     }
-    tamaño++;
-}    
 
-    public void agregarInicio(T elemento) {
+    public void setFin(Nodo<T> fin) {
+        this.fin = fin;
+    }
+
+
+    public boolean esVacia(){
+        return this.cantNodos==0;
+    }    
+
+
+    public void agregar(T elemento, String primaryKey){
         Nodo<T> nuevo = new Nodo<>(elemento);
+        nuevo.setPrimaryKey(primaryKey);
+        nuevo.setValor(elemento);
+        if (this.esVacia()){
+            inicio = nuevo;
+            fin = nuevo;
+        }else{
+            Nodo<T> aux = inicio;
+            if(primaryKey.compareTo(inicio.primaryKey) < 0) agregarInicio(elemento, primaryKey);
+            if(primaryKey.compareTo(fin.primaryKey) > 0) agregarFinal(elemento, primaryKey);
+            boolean encontrado = false;
+            while (aux.siguiente != null && !encontrado){
+                if(primaryKey.compareTo(aux.primaryKey) < 0){
+                    nuevo.setAnterior(aux.anterior);
+                    nuevo.setSiguiente(aux);
+                    aux.anterior.setSiguiente(nuevo);
+                    aux.setAnterior(nuevo);
+                    encontrado = true;
+                }
+                aux = aux.siguiente;
+            }
+        }
+        cantNodos++;
+    }    
+
+    public void agregarInicio(T elemento, String primaryKey) {
+        Nodo<T> nuevo = new Nodo<>(elemento);
+        nuevo.setPrimaryKey(primaryKey);
+        nuevo.setValor(elemento);
         if (this.esVacia()) {
-            this.cabeza=nuevo;
+            inicio = nuevo;
+            fin = nuevo;
         } else {
-            Nodo<T> actual = this.cabeza;
-            actual.siguiente = cabeza;
-            cabeza = actual;
+            nuevo.siguiente = inicio;
+            inicio.anterior = nuevo;
+            inicio = nuevo;
         }
-
+        cantNodos++;
     }
 
-public void agregarFinal(T elemento){
-    Nodo<T> nuevo = new Nodo<>(elemento);
-    if (cabeza==null){
-        cabeza=nuevo;
-    }else{
-        Nodo<T> actual = cabeza;
-        while (actual.siguiente!=null){
-            actual=actual.siguiente;
+    public void agregarFinal(T elemento, String primaryKey){
+        Nodo<T> nuevo = new Nodo<>(elemento);
+        if (this.esVacia()){
+            inicio = nuevo;
+            fin = nuevo;
+        }else{
+            fin.siguiente = nuevo;
+            nuevo.anterior = fin;
+            fin = nuevo;
         }
-        actual.siguiente=nuevo;
-    }
-    tamaño++;
-}        
-    
-public void borrarInicio(){
-    if (!this.esVacia()){
-        cabeza=cabeza.siguiente;
-        tamaño --;
-    }else{
-        System.out.println("Lista vacia, no hay elementos para borrar");
-    }
-}    
+        nuevo.setPrimaryKey(primaryKey);
+        nuevo.setValor(elemento);
+        cantNodos++;
+    }        
+
+    public void borrarInicio(){
+        if (!this.esVacia()){
+            inicio = inicio.siguiente;
+            cantNodos --;
+        }else{
+            System.out.println("Lista vacia, no hay elementos para borrar");
+        }
+    }    
 
     public void borrarFin() {
-        Nodo<T> actual=cabeza;
-        while (actual !=null && actual.siguiente.siguiente!=null){
-            actual=actual.siguiente;
+        if (!this.esVacia()){
+            fin = fin.anterior;
+            cantNodos --;
+        }else{
+            System.out.println("Lista vacia, no hay elementos para borrar");
         }
-        actual.siguiente=null;
     }   
- 
-private Nodo<T> obtenerNodo(T elemento){
-    Nodo<T> actual=cabeza;
-    while (actual!=null){
-        if (actual.valor.equals(elemento)){
-            return actual; //si se encuentra el elemento
-        }
-        actual=actual.siguiente;
-    }
-    return null;  // si no se encuentra el elemento
-} 
 
-public T obtener(int indice){
-    verificarIndice(indice);
-    Nodo<T> actual=cabeza;
-    for(int i=0;i<indice;i++){
-        actual=actual.siguiente;
-    }
-    return actual.valor;
-}
-
-public void eliminarNodo(T elemento) {
-    if (cabeza == null) {
-        return; // Lista vacía, no hay nada que eliminar
-    }
-
-    // Si el nodo a eliminar es la cabeza
-    if (cabeza.valor.equals(elemento)) {
-        cabeza = cabeza.siguiente;
-        tamaño--;
-        return;
-    }
-
-    Nodo<T> actual = cabeza;
-    while (actual.siguiente != null && !actual.siguiente.valor.equals(elemento)) {
-        actual = actual.siguiente;
-    }
-
-    if (actual.siguiente != null) {
-        // Nodo encontrado: eliminarlo
-        actual.siguiente = actual.siguiente.siguiente;
-        tamaño--;
-    }
-}    
-    
-   public T eliminar(int indice) {
-        verificarIndice(indice);
-        T eliminado;
-        if (indice == 0) {
-            eliminado = cabeza.valor;
-            cabeza = cabeza.siguiente;
-        } else {
-            Nodo<T> anterior = cabeza;
-            for (int i = 0; i < indice - 1; i++) {
-                anterior = anterior.siguiente;
+    public boolean existe(String primaryKey){
+        boolean encontrado = false;
+        Nodo<T> aux=inicio;
+        while (aux!=null && !encontrado){
+            if (aux.primaryKey.compareTo(primaryKey) == 0){
+                encontrado = true;
             }
-            eliminado = anterior.siguiente.valor;
-            anterior.siguiente = anterior.siguiente.siguiente;
+            aux=aux.siguiente;
         }
-        tamaño--;
-        return eliminado;
-    }
+        return encontrado;
+    } 
 
-private void verificarIndice(int indice){
-    if (indice<0 || indice>=tamaño){
-        throw new IndexOutOfBoundsException("Índice inválido");
-    }
-}
-
-    public int tamaño() {
-        return tamaño;
-    }
-
- public String mostrar() {
-      String listosalas="";
-        Nodo<T> actual = cabeza;
-        while (actual!=null){
-            listosalas=listosalas + actual.valor + " - ";
-            actual=actual.siguiente;
-            
+    public T obtenerPorIndice(int indice){
+        verificarIndice(indice);
+        Nodo<T> aux=inicio;
+        for(int i=0;i<indice;i++){
+            aux=aux.siguiente;
         }
-        return listosalas;
+        return aux.valor;
+    }
+
+    public void eliminarNodo(T elemento) {
+        if (this.esVacia()) return;
+        if (inicio.valor.equals(elemento)) {
+            inicio = inicio.siguiente;
+            cantNodos--;
+            return;
+        }else if(fin.valor.equals(elemento)){
+            fin = fin.anterior;
+            cantNodos--;
+            return;
+        }
+        Nodo<T> aux = inicio;
+        while (aux.siguiente != null && !aux.siguiente.valor.equals(elemento) && aux.siguiente != fin) aux = aux.siguiente;
+        if (aux.siguiente != null && aux.siguiente != fin) {
+            aux.siguiente = aux.siguiente.siguiente;
+            aux.siguiente.anterior = aux;
+            cantNodos--;
+        }
+    }    
+
+       public T eliminar(int indice) {
+            verificarIndice(indice);
+            T eliminado;
+            if (indice == 0) {
+                eliminado = inicio.valor;
+                inicio = inicio.siguiente;
+            } else if (indice == cantNodos -1){
+                eliminado = fin.valor;
+                fin = fin.anterior;
+            } else {
+                Nodo<T> aux = inicio;
+                for (int i = 0; i < indice - 1; i++) {
+                    aux = aux.siguiente;
+                }
+                eliminado = aux.siguiente.valor;
+                aux.siguiente = aux.siguiente.siguiente;
+                aux.siguiente.anterior = aux;
+            }
+            cantNodos--;
+            return eliminado;
+        }
+
+    private void verificarIndice(int indice){
+        if (indice < 0 || indice >= cantNodos){
+            throw new IndexOutOfBoundsException("Índice inválido");
+        }
+    }
+
+    public String mostrar() {
+        String lista="";
+        Nodo<T> aux = inicio;
+        while (aux!=null){
+            lista += aux.valor + " - ";
+            aux=aux.siguiente;
+        }
+        return lista;
     }   
-    
-public String mostrar1() {
-    String resultado = "";
-    Nodo actual = cabeza; // o el nodo inicial de tu lista
-    while (actual != null) {
-        
-        resultado += actual.valor.toString() + " "; // o el método que corresponda para convertir a String
-        actual = actual.siguiente; // o el puntero al siguiente nodo
+
+    public String mostrar1() {
+        String lista = "";
+        Nodo aux = inicio;
+        while (aux != null) {
+
+            lista += aux.getValor().toString()+ " | ";
+            aux = aux.siguiente;
+        }
+        return lista.trim();
     }
-    return resultado.trim(); // para eliminar espacios extras
-}
+    
+    public String mostrar2() {
+        String lista = "";
+        Nodo aux = fin;
+        while (aux != null) {
+
+            lista += aux.valor.toString() + "|";
+            aux = aux.anterior;
+        }
+        return lista.trim();
+    }
+    public boolean existe(Nodo<T> x){
+        Nodo aux = inicio;
+        while(aux != null){
+            if(aux.equals(x)) return true;
+            aux = aux.siguiente;
+        }
+        return false;
+    }
 }
