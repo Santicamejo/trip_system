@@ -8,7 +8,7 @@ public class Vuelo {
     String CodigoAeropuertoOrigen;
     String CodigoAeropuertoDestino;
     String CodigoDeVuelo;
-    int Capacidad;
+    double Capacidad;
     int CostoEnDolares;
     Estado Estado;
     Lista<Pasajero> Reservas;
@@ -51,7 +51,7 @@ public class Vuelo {
         this.CodigoDeVuelo = CodigoDeVuelo;
     }
 
-    public int getCapacidad() {
+    public double getCapacidad() {
         return Capacidad;
     }
 
@@ -91,18 +91,12 @@ public class Vuelo {
         this.Reservas = Reservas;
     }
     
-    public Retorno abrirVuelo(String codigoDeVuelo){
-        Retorno ret = new Retorno(Retorno.Resultado.OK);
-        this.Estado = Estado.ABIERTO;
-        ret.ok("El vuelo " + codigoDeVuelo + "está abierto.");
-        return ret;
+    public void abrirVuelo(){
+        setEstado(Estado.ABIERTO);
     }
     
-    public Retorno cerrarVuelo(String codigoDeVuelo){
-        Retorno ret = new Retorno(Retorno.Resultado.OK);
-        this.Estado = Estado.CERRADO;
-        ret.ok("El vuelo " + codigoDeVuelo + "está cerrado.");
-        return ret;
+    public void cerrarVuelo(){
+        setEstado(Estado.CERRADO);
     }
     
 }

@@ -1,6 +1,7 @@
 package sistemaViajes;
 
 //María Euugenia Artola - 367261
+//Santiago Miranda - 303197
 
 import Test.Retorno;
 import dominio.Aeropuerto;
@@ -105,7 +106,13 @@ public class Sistema implements ISistema {
     @Override
     public Retorno listarPasajerosPorCategoría(Categoria unaCategoria) {
         Retorno ret = new Retorno(Retorno.Resultado.NO_IMPLEMENTADA);
-        ret.setValorString(ordenarPorCategoria());
+        String lista = unaCategoria + ": \n";
+        Nodo<Pasajero> aux = Pasajeros.getInicio();
+        while (aux != null) {
+            if(aux.getValor().getCategoria().equals(unaCategoria)) lista += aux.getValor().getNombre() + "\n";
+            aux = aux.getSiguiente();
+        }
+        ret.setValorString(lista);
         ret.setResultado(Retorno.Resultado.OK);
         return ret;
     }
@@ -118,7 +125,7 @@ public class Sistema implements ISistema {
         if(codigo == null || codigo.isEmpty() ||nombre == null || nombre.isEmpty()){
             ret.setValorString("Los parámetros no pueden estar vacíos.");
             ret.setResultado(Retorno.Resultado.ERROR_1);
-        } else if(!Aeropuertos.existe(codigo)){
+        } else if(Aeropuertos.existe(codigo)){
             ret.setValorString("Ya existe un aeropuerto con ese código.");
             ret.setResultado(Retorno.Resultado.ERROR_2);
         } else {
@@ -132,7 +139,7 @@ public class Sistema implements ISistema {
     //8
     @Override
     public Retorno obtenerAeropuerto(String codigo) {
-        Retorno ret = new Retorno(Retorno.Resultado.NO_IMPLEMENTADA);;
+        Retorno ret = new Retorno(Retorno.Resultado.NO_IMPLEMENTADA);
         if(codigo == null || codigo.isEmpty()){
             ret.setValorString("El código no pueden estar vacío.");
             ret.setResultado(Retorno.Resultado.ERROR_1);
@@ -171,7 +178,7 @@ public class Sistema implements ISistema {
         } else if(!existeAeropuerto(codigoAeropuertoDestino)){
             ret.setValorString("El aeropuerto de destino no éxiste.");
             ret.setResultado(Retorno.Resultado.ERROR_4);
-        } else if(!Vuelos.existe(codigoDeVuelo)){
+        } else if(Vuelos.existe(codigoDeVuelo)){
             ret.setValorString("Ya existe un vuelo con ese código.");
             ret.setResultado(Retorno.Resultado.ERROR_5);
         } else {
@@ -197,7 +204,7 @@ public class Sistema implements ISistema {
             ret.setValorString(
                     v.getValor().getCodigoAeropuertoOrigen() + ":" + v.getValor().getCodigoAeropuertoDestino() + ";" 
                     + v.getValor().getCodigoDeVuelo() + ";" + v.getValor().getCapacidad() + ";" + v.getValor().getCostoEnDolares() + ";"
-                    + v.getValor().getEstado() + ";" + v.getValor().getReservas().getCantNodos() + ";" + v.getValor().getConfirmados());
+                    + v.getValor().getEstado() + ";" + v.getValor().getReservas().getCantNodos() + ";" + v.getValor().getConfirmados().getCantNodos());
             ret.setResultado(Retorno.Resultado.OK);
         }
         return ret;
@@ -218,9 +225,9 @@ public class Sistema implements ISistema {
             ret.setValorString("El vuelo no está en estado PROGRAMADO.");
             ret.setResultado(Retorno.Resultado.ERROR_3);
         } else {
-            v.getValor().setEstado(Estado.ABIERTO);
             ret.setValorString("El vuelo está ABIERTO");
             ret.setResultado(Retorno.Resultado.OK);
+             v.getValor().abrirVuelo();
         }
         return ret;
     }
@@ -229,20 +236,20 @@ public class Sistema implements ISistema {
     @Override
     public Retorno cerrarVuelo(String codigoDeVuelo) {
         Retorno ret = new Retorno(Retorno.Resultado.NO_IMPLEMENTADA);
-        Vuelo v = obtenerVuelo(codigoDeVuelo);
+        Nodo<Vuelo> v = obtenerNodoVuelo(codigoDeVuelo);
         if(codigoDeVuelo == null || codigoDeVuelo.isEmpty()){
             ret.setValorString("El código no puede estar vacío.");
             ret.setResultado(Retorno.Resultado.ERROR_1);
         } else if(v == null){
             ret.setValorString("No existe un vuelo con ese código.");
             ret.setResultado(Retorno.Resultado.ERROR_2);
-        } else if(!v.getEstado().equals(Estado.ABIERTO)){
+        } else if(!v.getValor().getEstado().equals(Estado.ABIERTO)){
             ret.setValorString("El vuelo no está en estado ABIERTO.");
             ret.setResultado(Retorno.Resultado.ERROR_3);
         } else {
-            v.setEstado(Estado.CERRADO);
-            Nodo<Aeropuerto> a = obtenerNodoAeropuerto(v.getCodigoAeropuertoOrigen());
-            a.getValor().getEnEspera().agregarFinal(v, codigoDeVuelo);
+            v.getValor().cerrarVuelo();
+            Nodo<Aeropuerto> a = obtenerNodoAeropuerto(v.getValor().getCodigoAeropuertoOrigen());
+            a.getValor().getEnEspera().agregarFinal(v.getValor(), codigoDeVuelo);
             ret.setValorString("El vuelo está CERRADO");
             ret.setResultado(Retorno.Resultado.OK);
         }
@@ -270,10 +277,10 @@ public class Sistema implements ISistema {
         } else if (v.getValor().getEstado().equals(Estado.CERRADO) || v.getValor().getEstado().equals(Estado.FINALIZADO)){
             ret.setValorString("El vuelo no está habilitado para realizar reservas.");
             ret.setResultado(Retorno.Resultado.ERROR_5);
-        } else if(v.getValor().getReservas().existe(p)){
+        } else if(v.getValor().getReservas().existe(cedula)){
             ret.setValorString("El pasajero ya tiene una reserva para este vuelo o realizó el check-in.");
             ret.setResultado(Retorno.Resultado.ERROR_6);
-        } else if(v.getValor().getReservas().getCantNodos() == (v.getValor().getCapacidad()) * 1.1){
+        } else if(v.getValor().getReservas().getCantNodos() >= Math.ceil(v.getValor().getCapacidad() * 1.1)){
             ret.setValorString("Se alcanzó la capacidad máxima de reservas para el vuelo " + codigoDeVuelo + ".");
             ret.setResultado(Retorno.Resultado.ERROR_7);
         } else {
@@ -293,7 +300,7 @@ public class Sistema implements ISistema {
         if(codigoDeVuelo == null || codigoDeVuelo.isEmpty() || cedula == null || cedula.isEmpty()){
             ret.setValorString("Los parámetros no pueden estar vacíos.");
             ret.setResultado(Retorno.Resultado.ERROR_1);
-        }  else if(!cedula.matches("\\d{1,2}\\.\\d{3}\\.\\d{3}-\\d")){
+        } else if(!cedula.matches("\\d{1,2}\\.\\d{3}\\.\\d{3}-\\d")){
             ret.setValorString("El formato de la cédula no es válido.");
             ret.setResultado(Retorno.Resultado.ERROR_2);
         } else if(v == null){
@@ -305,10 +312,10 @@ public class Sistema implements ISistema {
         } else if(!v.getValor().getEstado().equals(Estado.ABIERTO)){
             ret.setValorString("El vuelo no está en estado ABIERTO.");
             ret.setResultado(Retorno.Resultado.ERROR_5);
-        } else if(!v.getValor().getReservas().existe(p)){
+        } else if(!v.getValor().getReservas().existe(cedula)){
             ret.setValorString("El pasajero no tiene una reserva para este vuelo.");
             ret.setResultado(Retorno.Resultado.ERROR_6);
-        } else if(v.getValor().getConfirmados().existe(p)){
+        } else if(v.getValor().getConfirmados().existe(cedula)){
             ret.setValorString("El pasajero ya realizó el check-in para este vuelo.");
             ret.setResultado(Retorno.Resultado.ERROR_7);
         } else if(v.getValor().getConfirmados().getCantNodos() == v.getValor().getCapacidad()){
@@ -338,11 +345,11 @@ public class Sistema implements ISistema {
             ret.setValorString("No hay vuelos esperando embarque.");
             ret.setResultado(Retorno.Resultado.ERROR_3);
         } else {
-            Vuelo v = obtenerVuelo(codigoAeropuerto);
-            v.setEstado(Estado.FINALIZADO);
+            Nodo<Vuelo> v = a.getValor().getEnEspera().getInicio();
+            v.getValor().setEstado(Estado.FINALIZADO);
             a.getValor().getEnEspera().borrarInicio();
-            a.getValor().getEmbarqueYDespegue().agregarFinal(v, codigoAeropuerto);
-            ret.setValorString("Vuelo " + v.getCodigoDeVuelo() + " embarcado.");
+            a.getValor().getEmbarqueYDespegue().agregarFinal(v.getValor(), codigoAeropuerto);
+            ret.setValorString("Vuelo " + v.getValor().getCodigoDeVuelo() + " embarcado.");
             ret.setResultado(Retorno.Resultado.OK);
         }
         return ret;
@@ -411,27 +418,6 @@ public class Sistema implements ISistema {
     /*----------------------------------------
     ----------Métodos private extras----------
     ----------------------------------------*/
-
-    private String ordenarPorCategoria(){
-        String platino = "Platino: \n";
-        String frecuente = "Frecuente: \n";
-        String estandar = "Estándar: \n";
-        String esporadico = "Esporádico: \n";
-        Nodo<Pasajero> aux = Pasajeros.getInicio();
-        while (aux != null) {
-            if(aux.getValor().getCategoria().equals(Categoria.PLATINO)) platino += aux.getValor().getNombre() + "\n";
-            if(aux.getValor().getCategoria().equals(Categoria.FRECUENTE)) frecuente += aux.getValor().getNombre() + "\n";
-            if(aux.getValor().getCategoria().equals(Categoria.ESTANDAR)) estandar += aux.getValor().getNombre() + "\n";
-            if(aux.getValor().getCategoria().equals(Categoria.ESPORADICO)) esporadico += aux.getValor().getNombre() + "\n";
-            aux = aux.getSiguiente();
-        }
-        String lista = "Pasajeros por categoría \n ------------------------------ \n"
-                + platino + "\n ------------------------------ \n"
-                + frecuente + "\n ------------------------------ \n"
-                + estandar + "\n ------------------------------ \n"
-                + esporadico;
-        return lista.trim();
-    }
     
     private boolean existeAeropuerto(String codigo){
         Nodo<Aeropuerto> aux = Aeropuertos.getInicio();
@@ -474,17 +460,6 @@ public class Sistema implements ISistema {
         while(aux != null){
             if(aux.getValor().getCedula().equals(cedula)) 
                 return new Pasajero(cedula, aux.getValor().getNombre(), aux.getValor().getEdad(), aux.getValor().getCategoria());
-            aux = aux.getSiguiente();
-        }
-        return null;
-    }
-    
-    private Vuelo obtenerVuelo(String codigo){
-        Nodo<Vuelo> aux = Vuelos.getInicio();
-        while(aux != null){
-            if(aux.getValor().getCodigoDeVuelo().equals(codigo)) 
-                return new Vuelo(aux.getValor().getCodigoAeropuertoOrigen(), aux.getValor().getCodigoAeropuertoDestino(), 
-                        codigo, aux.getValor().getCapacidad(), aux.getValor().getCostoEnDolares());
             aux = aux.getSiguiente();
         }
         return null;

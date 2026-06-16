@@ -62,6 +62,12 @@ public class Prueba {
                 return "ERROR_4";
             case ERROR_5:
                 return "ERROR_5";                
+            case ERROR_6:
+                return "ERROR_6";                
+            case ERROR_7:
+                return "ERROR_7";                
+            case ERROR_8:
+                return "ERROR_8";                
             case NO_IMPLEMENTADA:
                 return "NO_IMPLEMENTADA";
             default:

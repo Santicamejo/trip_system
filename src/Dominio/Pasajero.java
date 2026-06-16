@@ -47,5 +47,8 @@ public class Pasajero {
         this.Categoria = Categoria;
     }
     
-    
+    @Override
+    public String toString() {
+        return Nombre + " - " + cedula;
+    }
 }

@@ -55,7 +55,7 @@ public class Lista<T> {
             if(primaryKey.compareTo(inicio.primaryKey) < 0) agregarInicio(elemento, primaryKey);
             if(primaryKey.compareTo(fin.primaryKey) > 0) agregarFinal(elemento, primaryKey);
             boolean encontrado = false;
-            while (aux.siguiente != null && !encontrado){
+            while (aux != null && !encontrado){
                 if(primaryKey.compareTo(aux.primaryKey) < 0){
                     nuevo.setAnterior(aux.anterior);
                     nuevo.setSiguiente(aux);
