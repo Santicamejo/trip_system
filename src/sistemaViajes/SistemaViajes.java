@@ -4,6 +4,7 @@ package sistemaViajes;
 import Test.Prueba;
 import Test.Retorno;
 import dominio.Categoria;
+import dominio.Clase;
 
 public class SistemaViajes {
 
@@ -20,12 +21,14 @@ public class SistemaViajes {
                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+        
         int m2[][] = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}};
+        
         int m3[][] = {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                       {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -530,9 +533,9 @@ public class SistemaViajes {
         s.cerrarVuelo("ERR700");
         
         //Validación del método realizarCheckIn
-        System.out.println("--------------------------");
+        System.out.println("---------------------------");
         System.out.println("-----Realizar Check-in-----");
-        System.out.println("--------------------------");
+        System.out.println("---------------------------");
         
         Retorno r14_1 = s.realizarCheckIn(null, "1.000.000-1");
         Retorno r14_2 = s.realizarCheckIn("", "1.000.000-1");
@@ -616,6 +619,48 @@ public class SistemaViajes {
         p.ver(r15_15.resultado, Retorno.Resultado.OK, "embarque: " + r15_15.getValorString());
         p.ver(r15_16.resultado, Retorno.Resultado.OK, "embarque: " + r15_16.getValorString());
         p.ver(r15_17.resultado, Retorno.Resultado.ERROR_3, "embarque: " + r15_17.getValorString());
+        
+        
+        //Validación del método ConsultaDisponibilidad
+        System.out.println("--------------------------------------");
+        System.out.println("-------Consultas disponibilidad-------");
+        System.out.println("--------------------------------------");
+        
+        Retorno r16_1 = s.consultaDisponibilidad(m1, -12, Clase.PRIMERA);
+        Retorno r16_2 = s.consultaDisponibilidad(m2, 0, Clase.TURISTA);
+        Retorno r16_3 = s.consultaDisponibilidad(m3, 2, Clase.EJECUTIVA);
+        Retorno r16_4 = s.consultaDisponibilidad(m2, 1, Clase.PRIMERA);
+        Retorno r16_5 = s.consultaDisponibilidad(m1, 2, Clase.PRIMERA);
+        Retorno r16_6 = s.consultaDisponibilidad(m1, 4, Clase.EJECUTIVA);  
+        Retorno r16_7 = s.consultaDisponibilidad(m3, 2, Clase.PRIMERA);
+        Retorno r16_8 = s.consultaDisponibilidad(m2, -12, Clase.TURISTA);
+        Retorno r16_9 = s.consultaDisponibilidad(m1, 5, Clase.EJECUTIVA);
+        Retorno r16_10 = s.consultaDisponibilidad(m2, 1, Clase.PRIMERA);
+        Retorno r16_11 = s.consultaDisponibilidad(m2, -0, Clase.PRIMERA);
+        Retorno r16_12 = s.consultaDisponibilidad(m3, 2, Clase.EJECUTIVA);      
+        Retorno r16_13 = s.consultaDisponibilidad(m3, 4, Clase.TURISTA);
+        Retorno r16_14 = s.consultaDisponibilidad(m1, 2, Clase.PRIMERA);
+        Retorno r16_15 = s.consultaDisponibilidad(m2, 2, Clase.TURISTA);
+        Retorno r16_16 = s.consultaDisponibilidad(m1, 5, Clase.EJECUTIVA);
+        Retorno r16_17 = s.consultaDisponibilidad(m3, -6, Clase.TURISTA);        
+        
+        p.ver(r16_1.resultado, Retorno.Resultado.ERROR_1, "disponibles: " + r16_1.getValorString());
+        p.ver(r16_2.resultado, Retorno.Resultado.ERROR_1, "disponibles: " + r16_2.getValorString());
+        p.ver(r16_3.resultado, Retorno.Resultado.OK, "disponibles: " + r16_3.getValorString());
+        p.ver(r16_4.resultado, Retorno.Resultado.OK, "disponibles: " + r16_4.getValorString());
+        p.ver(r16_5.resultado, Retorno.Resultado.OK, "disponibles: " + r16_5.getValorString());
+        p.ver(r16_6.resultado, Retorno.Resultado.OK, "disponibles: " + r16_6.getValorString());
+        p.ver(r16_7.resultado, Retorno.Resultado.OK, "disponibles: " + r16_7.getValorString());
+        p.ver(r16_8.resultado, Retorno.Resultado.ERROR_1, "disponibles: " + r16_8.getValorString());
+        p.ver(r16_9.resultado, Retorno.Resultado.OK, "disponibles: " + r16_9.getValorString());
+        p.ver(r16_10.resultado, Retorno.Resultado.OK, "disponibles: " + r16_10.getValorString());
+        p.ver(r16_11.resultado, Retorno.Resultado.ERROR_1, "disponibles: " + r16_11.getValorString());
+        p.ver(r16_12.resultado, Retorno.Resultado.OK, "disponibles: " + r16_12.getValorString());
+        p.ver(r16_13.resultado, Retorno.Resultado.OK, "disponibles: " + r16_13.getValorString());
+        p.ver(r16_14.resultado, Retorno.Resultado.OK, "disponibles: " + r16_14.getValorString());
+        p.ver(r16_15.resultado, Retorno.Resultado.OK, "disponibles: " + r16_15.getValorString());
+        p.ver(r16_16.resultado, Retorno.Resultado.OK, "disponibles: " + r16_16.getValorString());
+        p.ver(r16_17.resultado, Retorno.Resultado.ERROR_1, "disponibles: " + r16_17.getValorString());
         
         
         p.imprimirResultadosPrueba();

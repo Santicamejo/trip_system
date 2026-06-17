@@ -50,23 +50,28 @@ public class Lista<T> {
         if (this.esVacia()){
             inicio = nuevo;
             fin = nuevo;
-        }else{
-            Nodo<T> aux = inicio;
-            if(primaryKey.compareTo(inicio.primaryKey) < 0) agregarInicio(elemento, primaryKey);
-            if(primaryKey.compareTo(fin.primaryKey) > 0) agregarFinal(elemento, primaryKey);
-            boolean encontrado = false;
-            while (aux != null && !encontrado){
-                if(primaryKey.compareTo(aux.primaryKey) < 0){
-                    nuevo.setAnterior(aux.anterior);
-                    nuevo.setSiguiente(aux);
-                    aux.anterior.setSiguiente(nuevo);
-                    aux.setAnterior(nuevo);
-                    encontrado = true;
-                }
+            cantNodos++;
+        } else {
+            if (primaryKey.compareTo(inicio.primaryKey) < 0) {
+                agregarInicio(elemento, primaryKey);
+            } else if (primaryKey.compareTo(fin.primaryKey) > 0) {
+                agregarFinal(elemento, primaryKey);
+            } else {
+                Nodo<T> aux = inicio;
+                boolean encontrado = false;
+                while (aux != null && !encontrado){
+                    if (primaryKey.compareTo(aux.primaryKey) < 0){
+                        nuevo.setAnterior(aux.anterior);
+                        nuevo.setSiguiente(aux);
+                        aux.anterior.setSiguiente(nuevo);
+                        aux.setAnterior(nuevo);
+                        encontrado = true;
+                        cantNodos++;
+                    }
                 aux = aux.siguiente;
+                }
             }
         }
-        cantNodos++;
     }    
 
     public void agregarInicio(T elemento, String primaryKey) {

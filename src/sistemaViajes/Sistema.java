@@ -18,6 +18,7 @@ public class Sistema implements ISistema {
     private Lista<Aeropuerto> Aeropuertos;
     private Lista<Vuelo> Vuelos;
     private Lista<Pasajero> Pasajeros;
+    private Lista<Pasajero>[] PasajerosPorCategoria;
     
     //1
     @Override
@@ -25,6 +26,13 @@ public class Sistema implements ISistema {
         this.Aeropuertos = new Lista<>();
         this.Vuelos = new Lista<>();
         this.Pasajeros = new Lista<>();
+        
+        this.PasajerosPorCategoria = new Lista[Categoria.values().length];
+        
+        for (int i = 0; i < PasajerosPorCategoria.length; i++) {
+            PasajerosPorCategoria[i] = new Lista<>();
+        }
+        
         return Retorno.ok();
     }
 
@@ -53,6 +61,7 @@ public class Sistema implements ISistema {
             ret.setResultado(Retorno.Resultado.ERROR_4);
         } else {
             Pasajeros.agregar(nuevo, cedula);
+            PasajerosPorCategoria[categoria.getIndice()].agregar(nuevo, cedula); 
             ret.setValorString("Pasajero " + nombre + " creado con éxito.");
             ret.setResultado(Retorno.Resultado.OK);
         }
@@ -105,15 +114,18 @@ public class Sistema implements ISistema {
     //6
     @Override
     public Retorno listarPasajerosPorCategoría(Categoria unaCategoria) {
-        Retorno ret = new Retorno(Retorno.Resultado.NO_IMPLEMENTADA);
-        String lista = unaCategoria + ": \n";
-        Nodo<Pasajero> aux = Pasajeros.getInicio();
+        Retorno ret = new Retorno(Retorno.Resultado.OK);
+        String lista = unaCategoria.getTexto() + ": \n";
+    
+        Lista<Pasajero> pasajerosEnCategoria = PasajerosPorCategoria[unaCategoria.getIndice()];
+    
+        Nodo<Pasajero> aux = pasajerosEnCategoria.getInicio();
         while (aux != null) {
-            if(aux.getValor().getCategoria().equals(unaCategoria)) lista += aux.getValor().getNombre() + "\n";
+            lista += aux.getValor().getNombre() + "\n";
             aux = aux.getSiguiente();
         }
-        ret.setValorString(lista);
-        ret.setResultado(Retorno.Resultado.OK);
+    
+        ret.setValorString(lista.trim());
         return ret;
     }
 
